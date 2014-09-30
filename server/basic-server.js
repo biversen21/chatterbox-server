@@ -20,11 +20,6 @@ Lastly, we tell the server we made to listen on the given port and IP. */
 
 var server = http.createServer(handleRequest);
 
-console.log(server);
-// http.get('/api', function(request, response){
-//   console.log(request);
-//   response.end('hello world 2');
-// })
 console.log("Listening on http://" + ip + ":" + port);
 server.listen(port, ip);
 

@@ -1,13 +1,13 @@
 
 var app = {
-  server: 'http://127.0.0.1:3000',
+  server: 'http://127.0.0.1:3000/classes/messages',
   currentRoom: undefined,
   friendList: [],
   buttons: [],
   url: $(location).attr('href'),
 
   init: function() {
-    app.username = app.url.substring(app.url.indexOf('username') + 9, app.url.length);
+    app.username = prompt('What is your username?');
   },
 
   send: function(message) {
@@ -18,6 +18,7 @@ var app = {
       contentType: 'application/json',
       success: function () {
         console.log('chatterbox: Message sent');
+        // message.createAt = new Date().getTime();
         app.addMessage(message);
       },
       error: function () {
@@ -31,9 +32,11 @@ var app = {
     $.ajax({
       url: app.server,
       type: 'GET',
-      // data: {order : '-createdAt'},
+      // data: {order : 'createdAt'},
       contentType: 'application/json',
       success: function (data) {
+        data = JSON.parse(data);
+        data.results.sort(function(a, b) {return b.createdAt - a.createdAt;});
         app.displayMessages(data);
 
         $('li').click(function(){
@@ -54,11 +57,11 @@ var app = {
 
     for (var i = data.results.length - 1; i >= 0; i--){
       var currentData = data.results[i];
-      for (var key in currentData) {
-        if(currentData[key] !== null) {
-          currentData[key] = app.scrubber(currentData[key]);
-        }
-      }
+      // for (var key in currentData) {
+      //   if(currentData[key] !== null) {
+      //     currentData[key] = app.scrubber(currentData[key]);
+      //   }
+      // }
       app.addMessage(currentData);
     }
     app.addRooms(data);

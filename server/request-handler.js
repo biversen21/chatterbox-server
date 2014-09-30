@@ -5,7 +5,6 @@
  * this file and include it in basic-server.js so that it actually works.
  * *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html. */
 
-// var fs = require('fs');
   var messages = [];
 
 module.exports = function (request, response) {
@@ -14,7 +13,7 @@ module.exports = function (request, response) {
   /* Documentation for both request and response can be found at
    * http://nodemanual.org/0.8.14/nodejs_ref_guide/http.html */
   var statusCode = 404;
-  if(request.url === '/classes/messages'){
+  if(request.url === '/classes/messages' || '/classes/room1'){
 
     if(request.method === "GET"){
       var statusCode = 200;
@@ -35,6 +34,9 @@ module.exports = function (request, response) {
       });
       request.on('end', function(){
         message = JSON.parse(message);
+        console.log(message);
+        // add created at time as property of message
+        message.createdAt = new Date().getTime();
         messages.push(message);
       });
       response.end();
@@ -46,50 +48,13 @@ module.exports = function (request, response) {
       response.writeHead(statusCode, headers);
       response.end(null);
     }
-  }
-
-  //////// rooms below
-  console.log(request.url, "room request url")
-  if(request.url === '/classes/room1'){
-    console.log(request.url, "request url")
-    console.log(request.method, "request method")
-
-    if(request.method === "GET"){
-      var statusCode = 200;
-      var headers = defaultCorsHeaders;
-      headers['Content-Type'] = "text/plain";
-      response.writeHead(statusCode, headers);
-      response.end(JSON.stringify({results: messages}));
-
-    } else if(request.method === "POST"){
-      var statusCode = 201;
-      var message = "";
-      var headers = defaultCorsHeaders;
-      headers['Content-Type'] = "text/plain";
-      response.writeHead(statusCode, headers);
-
-      request.on('data', function(chunk){
-        message += chunk;
-      });
-      request.on('end', function(){
-        message = JSON.parse(message);
-        messages.push(message);
-      });
-      response.end();
-
-    } else if(request.method === "OPTIONS"){
-      var statusCode = 200;
-      var headers = defaultCorsHeaders;
-      headers['Content-Type'] = "text/plain";
-      response.writeHead(statusCode, headers);
-      response.end();
-    }
-  }
+  } else {
   //////////////////
-  headers = defaultCorsHeaders;
-  headers['Content-Type'] = "text/plain";
-  response.writeHead(statusCode, headers);
-  response.end();
+    headers = defaultCorsHeaders;
+    headers['Content-Type'] = "text/plain";
+    response.writeHead(statusCode, headers);
+    response.end();
+  }
 
 };
 
