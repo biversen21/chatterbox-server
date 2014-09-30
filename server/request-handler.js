@@ -13,56 +13,84 @@ module.exports = function (request, response) {
   request - such as what URL the browser is requesting. */
   /* Documentation for both request and response can be found at
    * http://nodemanual.org/0.8.14/nodejs_ref_guide/http.html */
-  if(request.method === "GET"){
-    var statusCode = 200;
-    var headers = defaultCorsHeaders;
-    headers['Content-Type'] = "text/plain";
-    response.writeHead(statusCode, headers);
-    response.end(JSON.stringify({results: messages}));
+  var statusCode = 404;
+  if(request.url === '/classes/messages'){
 
-  } else if(request.method === "POST"){
-    var statusCode = 201;
-    var message = "";
-    var headers = defaultCorsHeaders;
-    headers['Content-Type'] = "text/plain";
-    response.writeHead(statusCode, headers);
+    if(request.method === "GET"){
+      var statusCode = 200;
+      var headers = defaultCorsHeaders;
+      headers['Content-Type'] = "text/plain";
+      response.writeHead(statusCode, headers);
+      response.end(JSON.stringify({results: messages}));
 
-    request.on('data', function(chunk){
-      message += chunk;
-    });
-    request.on('end', function(){
-      message = JSON.parse(message);
-      messages.push(message);
-    });
-    response.end();
+    } else if(request.method === "POST"){
+      var statusCode = 201;
+      var message = "";
+      var headers = defaultCorsHeaders;
+      headers['Content-Type'] = "text/plain";
+      response.writeHead(statusCode, headers);
 
-  } else if(request.method === "OPTIONS"){
-    var statusCode = 200;
-    var headers = defaultCorsHeaders;
-    headers['Content-Type'] = "text/plain";
-    response.writeHead(statusCode, headers);
-    response.end(null);
+      request.on('data', function(chunk){
+        message += chunk;
+      });
+      request.on('end', function(){
+        message = JSON.parse(message);
+        messages.push(message);
+      });
+      response.end();
+
+    } else if(request.method === "OPTIONS"){
+      var statusCode = 200;
+      var headers = defaultCorsHeaders;
+      headers['Content-Type'] = "text/plain";
+      response.writeHead(statusCode, headers);
+      response.end(null);
+    }
   }
 
-  console.log("Serving request type " + request.method + " for url " + request.url);
+  //////// rooms below
+  console.log(request.url, "room request url")
+  if(request.url === '/classes/room1'){
+    console.log(request.url, "request url")
+    console.log(request.method, "request method")
 
-  var statusCode = 200;
+    if(request.method === "GET"){
+      var statusCode = 200;
+      var headers = defaultCorsHeaders;
+      headers['Content-Type'] = "text/plain";
+      response.writeHead(statusCode, headers);
+      response.end(JSON.stringify({results: messages}));
 
-  // /* Without this line, this server wouldn't work. See the note
-  //  * below about CORS. */
-  //
-  var headers = defaultCorsHeaders;
+    } else if(request.method === "POST"){
+      var statusCode = 201;
+      var message = "";
+      var headers = defaultCorsHeaders;
+      headers['Content-Type'] = "text/plain";
+      response.writeHead(statusCode, headers);
 
-  headers['Content-Type'] = "text/html";
+      request.on('data', function(chunk){
+        message += chunk;
+      });
+      request.on('end', function(){
+        message = JSON.parse(message);
+        messages.push(message);
+      });
+      response.end();
 
-  // /* .writeHead() tells our server what HTTP status code to send back */
+    } else if(request.method === "OPTIONS"){
+      var statusCode = 200;
+      var headers = defaultCorsHeaders;
+      headers['Content-Type'] = "text/plain";
+      response.writeHead(statusCode, headers);
+      response.end();
+    }
+  }
+  //////////////////
+  headers = defaultCorsHeaders;
+  headers['Content-Type'] = "text/plain";
   response.writeHead(statusCode, headers);
+  response.end();
 
-  // /* Make sure to always call response.end() - Node will not send
-  //  * anything back to the client until you do. The string you pass to
-  //  * response.end() will be the body of the response - i.e. what shows
-  //  * up in the browser.*/
-  response.end('test');
 };
 
 
