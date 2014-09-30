@@ -30,7 +30,6 @@ var app = {
     $.ajax({
       url: app.server,
       type: 'GET',
-      // data: {order : 'createdAt'},
       contentType: 'application/json',
       success: function (data) {
         data = JSON.parse(data);
@@ -51,15 +50,8 @@ var app = {
 
   displayMessages: function(data) {
     app.clearMessages();
-
     for (var i = data.results.length - 1; i >= 0; i--){
-      var currentData = data.results[i];
-      // for (var key in currentData) {
-      //   if(currentData[key] !== null) {
-      //     currentData[key] = app.scrubber(currentData[key]);
-      //   }
-      // }
-      app.addMessage(currentData);
+      app.addMessage(data.results[i]);
     }
     app.addRooms(data);
 
@@ -80,12 +72,6 @@ var app = {
     $('.room').click(function(){
       app.currentRoom = this.id;
     });
-  },
-
-  scrubber: function(data) {
-    if (data.indexOf('script') === -1){
-      return data.replace(/[&<>`"'!@$%()=+{}]/g, "");
-    }
   },
 
   clearMessages: function() {
